@@ -20,26 +20,6 @@ export class PlotsService {
     return this.http.get(`${this.plotFull}/${experimentId}`, { responseType: 'blob' });
   }
 
-  // getLatencyVsSize(broker: string, messageCount?: number | null) {
-  //   let params = new HttpParams().set('broker', broker);
-  //   if (messageCount) params = params.set('message_count', messageCount.toString());
-  //   return this.http.get(this.plotLatencyVsSize, { params, responseType: 'blob' });
-  // }
-  //
-  // getEnergyPerMessageVsSize(broker: string, messageCount?: number | null) {
-  //   let params = new HttpParams().set('broker', broker);
-  //   if (messageCount) params = params.set('message_count', messageCount.toString());
-  //   return this.http.get(this.plotEnergyPerMessageVsSize, { params, responseType: 'blob' });
-  // }
-
-  // getMetricVsSize(broker: string, metric: string, messageCount?: number | null) {
-  //   let params = new HttpParams()
-  //     .set('broker', broker)
-  //     .set('metric', metric);
-  //   if (messageCount) params = params.set('message_count', messageCount.toString());
-  //   return this.http.get(this.plotMetricVsSize, { params, responseType: 'blob' });
-  // }
-
   getLatencyVsSize(broker: string, messageCount?: number | null): Observable<{ image: string }> {
     let params = new HttpParams().set('broker', broker);
     if (messageCount) {
@@ -63,7 +43,6 @@ export class PlotsService {
     if (messageCount) {
       params = params.set('message_count', messageCount.toString());
     }
-
     return this.http.get<{ image: string }>(this.plotMetricVsSize, { params });
   }
 

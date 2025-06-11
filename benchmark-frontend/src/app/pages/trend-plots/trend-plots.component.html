@@ -20,7 +20,7 @@
 
     <ng-container *ngIf="plot.url; else loadingOrError">
       <div class="download-button-container">
-        <button class="download-button" (click)="downloadPlot(plot.url, plot.label + '.png')">Download Plot</button>
+        <button class="download-button" (click)="downloadPlot(plot.url, plot.label)">Download Plot</button>
       </div>
       <div class="zoom-wrapper">
         <img [src]="plot.url" loading="lazy" alt="{{ plot.label }} plot" class="plot-image" />
