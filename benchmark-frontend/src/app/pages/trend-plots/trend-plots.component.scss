@@ -1,0 +1,153 @@
+.filters {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  background: #f9f9f9;
+  padding: 1rem;
+  border-radius: 6px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+
+  label {
+    display: flex;
+    flex-direction: column;
+    font-weight: 500;
+    color: #555;
+
+    select,
+    input {
+      margin-top: 0.5rem;
+      padding: 0.5rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      min-width: 180px;
+
+      &:focus {
+        border-color: #007acc;
+        outline: none;
+      }
+    }
+  }
+
+  button {
+    padding: 0.5rem 1rem;
+    font-size: 0.95rem;
+    margin-top: 1.5rem;
+    background-color: #985277;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #8e416a;
+    }
+
+    &:disabled {
+      background-color: #8f757e;
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+  }
+}
+
+
+.plots-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 32px;
+  padding: 24px 16px;
+  justify-items: center;
+  align-items: start;
+}
+
+
+.plot-wrapper {
+  border: 2px solid #555;
+  padding: 16px;
+  width: 100%;
+  max-width: 1000px;
+  min-height: 400px;
+  box-sizing: border-box;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: center;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.plot-title {
+  color: #333;
+  font-weight: bold;
+  margin-bottom: 10px;
+  text-transform: capitalize;
+}
+
+.download-button-container {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.download-button {
+  background-color: #985277;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.download-button:hover {
+  background-color: #8e416a;
+}
+
+.zoom-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+
+.plot-image {
+  max-width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.image-wrapper {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loading-placeholder {
+  height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #555;
+  font-style: italic;
+}
+
+.loading-placeholder,
+.error-placeholder,
+.no-plot-placeholder {
+  height: 400px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-style: italic;
+  color: #666;
+  text-align: center;
+  padding: 8px;
+}

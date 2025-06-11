@@ -1,0 +1,105 @@
+:host {
+  display: block;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+}
+
+.title {
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 1rem;
+}
+
+.experiment-layout {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.download-button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  gap: 2rem;
+}
+
+.experiment-meta-table {
+  width: 90%;
+  border-collapse: collapse;
+  background-color: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  border-radius: 6px;
+  overflow: hidden;
+  margin: 1rem auto 2rem;
+  line-height: 2;
+
+  th {
+    text-align: right;
+    font-weight: 600;
+    padding: 0.4rem 0.6rem;
+    color: #555;
+    min-width: 100px;
+  }
+
+  td {
+    text-align: left;
+    padding: 0.4rem 0.6rem;
+    color: #555;
+    word-break: break-word;
+  }
+
+  tr {
+    border-bottom: 1px solid #eaeaea;
+  }
+
+  @media (max-width: 1200px) {
+    font-size: 14px;
+
+    th, td {
+      padding: 0.35rem 0.5rem;
+    }
+  }
+
+  @media (max-width: 900px) {
+    display: block;
+
+    tr {
+      display: flex;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+
+    th, td {
+      flex: 1 1 50%;
+      padding: 0.3rem 0.5rem;
+    }
+
+    td[colspan="5"] {
+      flex: 1 1 100%;
+    }
+  }
+}
+
+.plot-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.plot-container .plot-image {
+  border: 1px solid #ccc;
+  margin-bottom: 1rem;
+}
+
+.download-button {
+  background-color: #985277;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}

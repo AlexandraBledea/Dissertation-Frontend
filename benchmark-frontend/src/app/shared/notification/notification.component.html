@@ -1,0 +1,10 @@
+<div class="notification-container">
+  <div
+    class="snackbar"
+    [class.error]="notification.type === 'error'"
+    *ngFor="let notification of notifications"
+  >
+    {{ notification.message }}
+    <button class="close-btn" (click)="dismiss(notification.id)">✖</button>
+  </div>
+</div>

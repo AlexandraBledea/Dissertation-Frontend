@@ -1,0 +1,55 @@
+<h2 class="title">Experiment Details - ID: {{ experiment?.id }} </h2>
+
+<div class="experiment-layout">
+  <table class="experiment-meta-table" *ngIf="experiment">
+    <tr>
+      <th> Broker: </th>
+      <td> {{ experiment.broker }} </td>
+      <th> Message Count: </th>
+      <td> {{ experiment.numberOfMessages }} </td>
+      <th> Message Size: </th>
+      <td> {{ experiment.messageSizeInKB }} KB </td>
+      <th> Start Time: </th>
+      <td> {{ experiment.startTime | date: 'medium' }} </td>
+      <th> End Time: </th>
+      <td> {{ experiment.endTime  | date: 'medium' }} </td>
+    </tr>
+    <tr>
+      <th> Energy: </th>
+      <td> {{ experiment.energy }} Joules (J) </td>
+      <th> Avg CPU: </th>
+      <td> {{ experiment.averageCpu }} (%) </td>
+      <th> Avg Memory: </th>
+      <td> {{ experiment.averageMemory }} (MB) </td>
+      <th> Latency: </th>
+      <td> {{ experiment.latency }} (ms) </td>
+      <th> Throughput: </th>
+      <td colspan="5"> {{ experiment.throughput }} (msg/s) </td>
+    </tr>
+  </table>
+
+  <div class="plot-container" *ngIf="fullPlotUrl; else loading">
+    <div class="download-button-container">
+      <button class="download-button" (click)="downloadPlot()"> Download Plot </button>
+      <button class="download-button" (click)="downloadCSV()"> Download CSV </button>
+    </div>
+    <div class="zoom-wrapper">
+      <lib-ngx-image-zoom
+        class="plot-image"
+        [thumbImage]="fullPlotUrl"
+        [fullImage]="fullPlotUrl"
+        [zoomMode]="'hover'"
+        [magnification]="2"
+        [enableScrollZoom]="true"
+        [enableLens]="true"
+        [lensWidth]="200"
+        [lensHeight]="200"
+        [circularLens]="true"
+      ></lib-ngx-image-zoom>
+    </div>
+  </div>
+
+  <ng-template #loading>
+    <p> Loading plot... </p>
+  </ng-template>
+</div>

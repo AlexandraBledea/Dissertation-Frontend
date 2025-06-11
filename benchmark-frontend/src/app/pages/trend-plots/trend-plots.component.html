@@ -1,0 +1,38 @@
+<div class="filters">
+
+  <label> Broker:
+    <select [(ngModel)]="filters.broker">
+      <option [ngValue]="null"> All</option>
+      <option *ngFor="let broker of brokers" [value]="broker"> {{ broker }}</option>
+    </select>
+  </label>
+
+  <label> Number of Messages:
+    <input [(ngModel)]="filters.numberOfMessages" placeholder="e.g. 1000"/>
+  </label>
+
+  <button (click)="generatePlots()"> Generate Plots </button>
+</div>
+
+<div class="plots-grid">
+  <div class="plot-wrapper" *ngFor="let plot of plots">
+    <div class="plot-title">{{ plot.label }}</div>
+
+    <ng-container *ngIf="plot.url; else loadingOrError">
+      <div class="download-button-container">
+        <button class="download-button" (click)="downloadPlot(plot.url, plot.label + '.png')">Download Plot</button>
+      </div>
+      <div class="zoom-wrapper">
+        <img [src]="plot.url" loading="lazy" alt="{{ plot.label }} plot" class="plot-image" />
+      </div>
+    </ng-container>
+
+    <ng-template #loadingOrError>
+      <div class="loading-placeholder" *ngIf="plot.loading">Loading {{ plot.label }}...</div>
+      <div class="error-placeholder" *ngIf="plot.error">{{ plot.error }}</div>
+      <div class="no-plot-placeholder" *ngIf="!plot.loading && !plot.error && !plot.url">No plot generated yet.</div>
+    </ng-template>
+  </div>
+</div>
+
+

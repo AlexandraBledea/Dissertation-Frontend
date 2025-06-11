@@ -1,0 +1,96 @@
+<div class="filters">
+
+  <label> Broker:
+    <select [(ngModel)]="filters.broker">
+      <option [ngValue]="null"> All</option>
+      <option *ngFor="let broker of brokers" [value]="broker"> {{ broker }}</option>
+    </select>
+  </label>
+
+  <label> Number of Messages:
+    <input [(ngModel)]="filters.numberOfMessages" placeholder="e.g. 1000"/>
+  </label>
+
+  <label> Message Size (KB):
+    <input [(ngModel)]="filters.messageSize" placeholder="e.g. 10"/>
+  </label>
+
+  <button (click)="fetchExperiments()"> Apply Filters</button>
+  <button (click)="resetFilters()"> Reset Filters</button>
+  <button (click)="goToTrendPlots()">  ➡ Trend Plots </button>
+  <button (click)="goToBarPlots()"> ➡ Bar Plots </button>
+
+</div>
+
+<form #experimentForm="ngForm" (ngSubmit)="startExperiment()">
+  <div class="start-experiment-container">
+    <div class="start-experiment">
+
+      <label>Broker:
+        <select name="broker" required [(ngModel)]="experimentSetup.broker">
+          <option [ngValue]="null" disabled selected hidden> Select a broker</option>
+          <option *ngFor="let broker of brokers" [value]="broker"> {{ broker }}</option>
+        </select>
+      </label>
+
+
+      <label>Number of Messages:
+        <input type="text" name="numMessages" [(ngModel)]="experimentSetup.numberOfMessages" required pattern="^[0-9]+$"
+               #msgInput="ngModel"/>
+        <small class="error" *ngIf="msgInput.touched && experimentSetup.numberOfMessages && !msgInput.valid">
+          Enter a valid positive integer.
+        </small>
+      </label>
+
+      <label>Message Size (KB):
+        <input type="text" name="msgSize" [(ngModel)]="experimentSetup.messageSize" required pattern="^[0-9]+$"
+               #sizeInput="ngModel"/>
+        <small class="error"
+               *ngIf="sizeInput.touched && experimentSetup.messageSize && (!sizeInput.valid || !isSizeValid())">
+          Size must be an integer between 1 and 500.
+        </small>
+      </label>
+
+      <button type="submit" [disabled]="!experimentForm.valid || !isSizeValid() || !experimentSetup.broker">
+        Start experiment
+      </button>
+    </div>
+  </div>
+</form>
+
+<div class="table-container">
+  <table>
+    <thead>
+    <tr>
+      <th>Broker</th>
+      <th>Number of Messages</th>
+      <th>Message Size</th>
+      <th>Start Time</th>
+      <th>End Time</th>
+      <th>Status</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let item of experiments">
+      <td> {{ item.broker }}</td>
+      <td> {{ item.numberOfMessages }}</td>
+      <td> {{ item.messageSizeInKB }} KB</td>
+      <td> {{ item.startTime | date: 'medium' }}</td>
+      <td> {{ item.endTime | date: 'medium' }}</td>
+      <td> {{ item.status }}</td>
+      <td>
+        <button (click)="viewExperiment(item)">View experiment</button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+
+  <div class="pagination">
+    <button (click)="previousPage()" [disabled]="pagination.pageNumber === 0"> Prev</button>
+    <span> Page {{ pagination.pageNumber + 1 }} / {{ pagination.totalNumberOfPages }} </span>
+    <button (click)="nextPage()" [disabled]="pagination.pageNumber >= pagination.totalNumberOfPages - 1"> Next</button>
+  </div>
+
+</div>
