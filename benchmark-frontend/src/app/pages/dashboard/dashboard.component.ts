@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Experiment } from '../../data-types/Experiment';
 import { BenchmarkService } from '../../service/benchmark.service';
-import { PlotsService } from '../../service/plots.service';
 import { Pagination } from '../../data-types/Pagination';
 import { NotificationType } from '../../data-types/Notification';
 import { NotificationService } from '../../service/notification.service';
@@ -10,7 +9,7 @@ import { WebSocketService } from '../../service/websocket.service';
 
 const INITIAL_PAGINATION = {
   pageNumber: 0,
-  pageSize: 5,
+  pageSize: 7,
   totalNumberOfPages: 0,
   totalNumberOfItems: 0,
 }
@@ -39,8 +38,10 @@ export class DashboardComponent implements OnInit {
     messageSize: null,
   }
 
+  showModal = false;
+  experimentToDelete: any = null;
+
   constructor(private benchmarkService: BenchmarkService,
-              private plotsService: PlotsService,
               private notificationService: NotificationService,
               private router: Router,
               private websocketService: WebSocketService) {}
@@ -142,4 +143,48 @@ export class DashboardComponent implements OnInit {
   goToBarPlots(): void {
     this.router.navigate(['/bar-plots']);
   }
+
+  goToPlotsInformation(): void {
+    this.router.navigate(['/information']);
+  }
+
+
+  openDeleteModal(experiment: any): void {
+    this.experimentToDelete = experiment;
+    this.showModal = true;
+  }
+
+  cancelDelete(): void {
+    this.showModal = false;
+    this.experimentToDelete = null;
+  }
+
+  confirmDelete(): void {
+    if (!this.experimentToDelete) return;
+
+    this.benchmarkService.deleteExperiment(this.experimentToDelete.id).subscribe({
+      next: () => {
+        this.pagination = {...INITIAL_PAGINATION}
+        this.resetFilters();
+
+        this.notificationService.notify({
+          message: `Experiment ${this.experimentToDelete.id} deleted successfully.`,
+          type: NotificationType.success,
+        });
+
+        this.experimentToDelete = null;
+        this.showModal = false;
+      },
+      error: (err) => {
+        this.notificationService.notify({
+          message: 'Failed to delete experiment.',
+          type: NotificationType.error,
+        });
+
+        this.showModal = false;
+        this.experimentToDelete = null;
+      }
+    });
+  }
+
 }

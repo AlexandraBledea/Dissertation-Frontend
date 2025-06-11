@@ -17,8 +17,9 @@
 
   <button (click)="fetchExperiments()"> Apply Filters</button>
   <button (click)="resetFilters()"> Reset Filters</button>
-  <button (click)="goToTrendPlots()">  ➡ Trend Plots </button>
-  <button (click)="goToBarPlots()"> ➡ Bar Plots </button>
+  <button (click)="goToPlotsInformation()"> Plots Information → </button>
+  <button (click)="goToTrendPlots()">  Trend Plots → </button>
+  <button (click)="goToBarPlots()"> Bar Plots → </button>
 
 </div>
 
@@ -62,6 +63,7 @@
   <table>
     <thead>
     <tr>
+      <th>ID</th>
       <th>Broker</th>
       <th>Number of Messages</th>
       <th>Message Size</th>
@@ -73,6 +75,7 @@
     </thead>
     <tbody>
     <tr *ngFor="let item of experiments">
+      <td> {{ item.id }} </td>
       <td> {{ item.broker }}</td>
       <td> {{ item.numberOfMessages }}</td>
       <td> {{ item.messageSizeInKB }} KB</td>
@@ -80,7 +83,10 @@
       <td> {{ item.endTime | date: 'medium' }}</td>
       <td> {{ item.status }}</td>
       <td>
-        <button (click)="viewExperiment(item)">View experiment</button>
+        <div class="action-buttons">
+          <button (click)="viewExperiment(item)">View more</button>
+          <button (click)="openDeleteModal(item)">Delete</button>
+        </div>
       </td>
     </tr>
     </tbody>
@@ -93,4 +99,15 @@
     <button (click)="nextPage()" [disabled]="pagination.pageNumber >= pagination.totalNumberOfPages - 1"> Next</button>
   </div>
 
+</div>
+
+
+<div class="modal" [class.show]="showModal">
+  <div class="modal-content">
+    <p>Are you sure you want to delete this experiment?</p>
+    <div class="modal-buttons">
+      <button (click)="cancelDelete()">Cancel</button>
+      <button class="danger" (click)="confirmDelete()">Delete</button>
+    </div>
+  </div>
 </div>

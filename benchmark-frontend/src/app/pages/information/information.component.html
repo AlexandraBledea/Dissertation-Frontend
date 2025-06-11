@@ -1,0 +1,304 @@
+<div class="plot-info-nav">
+  <button
+    *ngFor="let type of plotTypes"
+    [class.active]="selectedPlot === type.key"
+    (click)="selectPlot(type.key)"
+  >
+    {{ type.label }}
+  </button>
+</div>
+
+<div class="plot-info-content">
+  <ng-container [ngSwitch]="selectedPlot">
+    <div *ngSwitchCase="'metrics-over-time'">
+      <h1>Plot Explanation: Experiment Metrics Over Time</h1>
+
+      <section class="plot-section">
+        <h2>📊 What It Shows</h2>
+        <p>
+          The <strong>Experiment Metrics Over Time</strong> plot displays how key performance metrics evolve throughout the duration of a single experiment.
+          It helps analyze transient behavior, resource spikes, or instability during message processing.
+        </p>
+        <p>
+          It includes <strong>four subplots</strong>, one for each metric:
+        </p>
+        <ul>
+          <li><strong>Latency (ms)</strong>: Time taken to process messages</li>
+          <li><strong>CPU Usage (%)</strong>: Percentage of CPU utilized</li>
+          <li><strong>Memory Usage (MB)</strong>: RAM consumed by the system</li>
+          <li><strong>Throughput (msg/s)</strong>: Messages processed per second</li>
+        </ul>
+      </section>
+
+      <section class="plot-section">
+        <h2>🧠 How It's Computed</h2>
+        <p>
+          The backend retrieves and parses the time-series CSV log for a specific experiment.
+          Each row in the CSV represents a snapshot taken at a point in time during the experiment.
+        </p>
+
+        <ul>
+          <li><strong>X-axis (shared):</strong> Seconds elapsed since experiment start</li>
+          <li><strong>Y-axes:</strong> Each subplot has its own metric scale</li>
+          <li><strong>Data Points:</strong> Taken at regular time intervals</li>
+        </ul>
+      </section>
+
+      <section class="plot-section">
+        <h2>⚠️ Requirements</h2>
+        <p>
+          To generate this plot, <strong>at least two valid data points</strong> with non-zero throughput must exist in the experiment's CSV data.
+          Otherwise, a <em>“Not enough data to generate plot”</em> message will be shown.
+        </p>
+      </section>
+    </div>
+    <div *ngSwitchCase="'comparison'">
+      <h1>Plot Explanation: Comparison Bar Plot</h1>
+
+      <section class="plot-section">
+        <h2>📊 What It Shows</h2>
+        <p>
+          The <strong>Comparison Bar Plot</strong> visualizes the average performance of each broker for a selected metric.
+          It helps to quickly compare how different brokers behave under the same experimental conditions.
+        </p>
+      </section>
+
+      <section class="plot-section">
+        <h2>🧠 How It's Computed</h2>
+        <p>
+          For each broker, all experiments matching the selected <strong>message size</strong>  and <strong>message count</strong>
+          are aggregated. The <strong>average value</strong> of the selected metric (e.g., latency, throughput, CPU, memory, energy) is calculated.
+        </p>
+
+        <ul>
+          <li><strong>X-axis:</strong> Broker names (e.g., RabbitMQ, Kafka)</li>
+          <li><strong>Y-axis:</strong> Average value of the selected metric</li>
+          <li><strong>Bar Label:</strong> Mean metric value and number of experiments</li>
+        </ul>
+      </section>
+
+      <section class="plot-section">
+        <h2>⚠️ Requirements</h2>
+        <p>
+          This plot is only generated when <strong>at least one experiment exists per broker</strong> for the given filters.
+          If this condition is not met, the system will return a placeholder indicating that there is not enough data.
+        </p>
+      </section>
+
+      <section class="plot-section">
+        <h2>📐 Special Cases</h2>
+        <ul>
+          <li><strong>Latency:</strong> Uses a logarithmic Y-axis due to large possible variance in latency values</li>
+        </ul>
+      </section>
+    </div>
+
+    <div *ngSwitchCase="'latency'">
+      <h1>Plot Explanation: Latency vs Message Size</h1>
+
+      <section class="plot-section">
+        <h2>📊 What It Shows</h2>
+        <p>
+          The <strong>Latency vs Message Size</strong> plot reveals how message size affects the average latency
+          for a specific broker. It helps you understand whether larger or smaller messages result in higher delays.
+        </p>
+      </section>
+
+      <section class="plot-section">
+        <h2>🧠 How It's Computed</h2>
+        <p>
+          For each unique message size, all experiments that match the selected <strong>broker</strong> (and optional
+          <strong>message count</strong>) are grouped.
+          A <strong>weighted average latency</strong> is computed, giving more influence to larger experiments:
+        </p>
+        <p>
+          <code>Weighted Avg = (latency × message count) summed, then divided by total message count</code>
+        </p>
+
+        <ul>
+          <li><strong>X-axis:</strong> Message sizes (KB)</li>
+          <li><strong>Y-axis:</strong> Weighted average latency (ms)</li>
+          <li><strong>Data Points:</strong> One for each unique message size</li>
+          <li><strong>Labels:</strong> Avg latency and number of experiments</li>
+        </ul>
+      </section>
+
+      <section class="plot-section">
+        <h2>⚠️ Requirements</h2>
+        <p>
+          This plot requires <strong>at least two distinct message sizes</strong> with valid latency data for the selected broker.
+          If fewer are found, the system displays a <em>"Not enough data to generate plot"</em> message.
+        </p>
+      </section>
+    </div>
+
+    <div *ngSwitchCase="'energy-per-msg'">
+      <h1>Plot Explanation: Energy per Message vs Message Size</h1>
+
+      <section class="plot-section">
+        <h2>📊 What It Shows</h2>
+        <p>
+          The <strong>Energy per Message vs Message Size</strong> plot displays how the energy efficiency of a broker
+          changes as message size increases. It gives insight into how costly (in energy) it is to send a single message
+          of varying sizes.
+        </p>
+      </section>
+
+      <section class="plot-section">
+        <h2>🧠 How It's Computed</h2>
+        <p>
+          For each distinct message size, the system aggregates all matching experiments for the selected broker and
+          calculates the <strong>average energy consumed per message</strong>:
+        </p>
+
+        <code>Energy per message = total energy used / total number of messages</code>
+
+        <ul>
+          <li><strong>X-axis:</strong> Message size (KB)</li>
+          <li><strong>Y-axis:</strong> Average energy consumption per message (in Joules)</li>
+          <li><strong>Data Points:</strong> One per unique message size</li>
+          <li><strong>Labels:</strong> Value annotations with average energy</li>
+        </ul>
+      </section>
+
+      <section class="plot-section">
+        <h2>⚠️ Requirements</h2>
+        <p>
+          This plot requires <strong>at least two different message sizes</strong> with valid energy and message count data
+          for the selected broker. Otherwise, it displays the <em>"Not enough data to generate plot"</em> message.
+        </p>
+      </section>
+    </div>
+
+    <div *ngSwitchCase="'cpu'">
+      <h1>Plot Explanation: CPU vs Message Size</h1>
+
+      <section class="plot-section">
+        <h2>📊 What It Shows</h2>
+        <p>
+          The <strong>CPU vs Message Size</strong> plot illustrates how the average CPU usage (%) changes as message size increases, for a selected broker.
+          This helps evaluate how efficiently the broker processes larger messages.
+        </p>
+      </section>
+
+      <section class="plot-section">
+        <h2>🧠 How It's Computed</h2>
+        <p>
+          For each message size, all matching experiments are aggregated and the <strong>arithmetic mean</strong> of CPU usage is computed.
+        </p>
+        <ul>
+          <li><strong>X-axis:</strong> Message Size (KB)</li>
+          <li><strong>Y-axis:</strong> Average CPU usage (%)</li>
+          <li><strong>Trend Line:</strong> Shows average CPU trend across message sizes</li>
+        </ul>
+      </section>
+
+      <section class="plot-section">
+        <h2>⚠️ Requirements</h2>
+        <p>
+          To render this plot, there must be <strong>at least two experiments</strong> with
+          <strong>different message sizes</strong> and valid CPU data.
+          Otherwise, a <em>“Not enough data to generate plot”</em> message is shown.
+        </p>
+      </section>
+    </div>
+
+    <div *ngSwitchCase="'memory'">
+      <h1>Plot Explanation: Memory vs Message Size</h1>
+
+      <section class="plot-section">
+        <h2>📊 What It Shows</h2>
+        <p>
+          The <strong>Memory vs Message Size</strong> plot displays how average memory consumption (MB) is affected by increasing message size for a given broker.
+          It’s useful for identifying memory bottlenecks or overhead.
+        </p>
+      </section>
+
+      <section class="plot-section">
+        <h2>🧠 How It's Computed</h2>
+        <p>
+          For each unique message size, the average of the memory usage across matching experiments is computed.
+        </p>
+        <ul>
+          <li><strong>X-axis:</strong> Message Size (KB)</li>
+          <li><strong>Y-axis:</strong> Average memory usage (MB)</li>
+          <li><strong>Data Points:</strong> One per message size</li>
+        </ul>
+      </section>
+
+      <section class="plot-section">
+        <h2>⚠️ Requirements</h2>
+        <h2>⚠️ Requirements</h2>
+        <p>
+          To render this plot, there must be <strong>at least two experiments</strong> with
+          <strong>different message sizes</strong> and valid memory data.
+          Otherwise, a <em>“Not enough data to generate plot”</em> message is shown.
+        </p>
+      </section>
+    </div>
+
+    <div *ngSwitchCase="'throughput'">
+      <h1>Plot Explanation: Throughput vs Message Size</h1>
+
+      <section class="plot-section">
+        <h2>📊 What It Shows</h2>
+        <p>
+          The <strong>Throughput vs Message Size</strong> plot shows how message throughput (messages/second) evolves with larger message sizes.
+          It helps in finding the optimal message size for performance.
+        </p>
+      </section>
+
+      <section class="plot-section">
+        <h2>🧠 How It's Computed</h2>
+        <p>
+          For each message size, the average throughput of all experiments is calculated.
+        </p>
+        <ul>
+          <li><strong>X-axis:</strong> Message Size (KB)</li>
+          <li><strong>Y-axis:</strong> Average throughput (messages/sec)</li>
+        </ul>
+      </section>
+
+      <section class="plot-section">
+        <h2>⚠️ Requirements</h2>
+        <p>
+          To render this plot, there must be <strong>at least two experiments</strong> with
+          <strong>different message sizes</strong> and valid throughput data.
+          Otherwise, a <em>“Not enough data to generate plot”</em> message is shown.
+        </p>
+      </section>
+    </div>
+
+    <div *ngSwitchCase="'energy'">
+      <h1>Plot Explanation: Total Energy vs Message Size</h1>
+
+      <section class="plot-section">
+        <h2>📊 What It Shows</h2>
+        <p>
+          The <strong>Energy vs Message Size</strong> plot tracks the total energy consumed during experiments for each message size.
+          It helps you understand how energy scales with message size.
+        </p>
+      </section>
+
+      <section class="plot-section">
+        <h2>🧠 How It's Computed</h2>
+        <p>
+          For every message size, all experiments are collected and their energy values are averaged.
+        </p>
+        <ul>
+          <li><strong>X-axis:</strong> Message Size (KB)</li>
+          <li><strong>Y-axis:</strong> Average energy usage (Joules)</li>
+        </ul>
+      </section>
+
+      <section class="plot-section">
+        <h2>⚠️ Requirements</h2>
+        <p>
+          To render this plot, there must be <strong>at least two experiments</strong> with
+          <strong>different message sizes</strong> and valid energy data.
+          Otherwise, a <em>“Not enough data to generate plot”</em> message is shown.
+        </p>
+      </section>
+    </div>
+  </ng-container>
+</div>

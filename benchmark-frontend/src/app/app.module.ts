@@ -11,6 +11,8 @@ import { ExperimentComponent } from './pages/experiment/experiment.component';
 import {NgxImageZoomModule} from 'ngx-image-zoom';
 import { TrendPlotsComponent } from './pages/trend-plots/trend-plots.component';
 import { BarPlotsComponent } from './pages/bar-plots/bar-plots.component';
+import { InformationComponent } from './pages/information/information.component';
+import { LandingComponent } from './pages/landing/landing.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +21,9 @@ import { BarPlotsComponent } from './pages/bar-plots/bar-plots.component';
     NotificationComponent,
     ExperimentComponent,
     TrendPlotsComponent,
-    BarPlotsComponent
+    BarPlotsComponent,
+    InformationComponent,
+    LandingComponent
   ],
   imports: [
     BrowserModule,

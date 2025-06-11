@@ -14,6 +14,14 @@
   <button (click)="generatePlots()"> Generate Plots </button>
 </div>
 
+<div class="plots-info-message">
+  <p>
+    If all experiments for the selected broker have the same message size, trend plots cannot be generated.
+    <br/>
+    A message saying <strong>"Not enough data to generate plot"</strong> will appear in those cases.
+  </p>
+</div>
+
 <div class="plots-grid">
   <div class="plot-wrapper" *ngFor="let plot of plots">
     <div class="plot-title">{{ plot.label }}</div>

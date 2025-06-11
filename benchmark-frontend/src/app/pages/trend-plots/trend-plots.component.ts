@@ -29,8 +29,6 @@ export class TrendPlotsComponent {
     { label: 'Energy per Message', metric: 'energy-per-message', loading: false }
   ];
 
-
-
   constructor(private plotsService: PlotsService,
               private notificationService: NotificationService) {}
 
@@ -38,6 +36,14 @@ export class TrendPlotsComponent {
     if (!this.filters?.broker) {
       this.notificationService.notify({
         message: 'Please select a broker before generating plots.',
+        type: NotificationType.error,
+      });
+      return;
+    }
+
+    if (this.filters.numberOfMessages !== null && (isNaN(Number(this.filters.numberOfMessages)) || Number(this.filters.numberOfMessages) < 0)) {
+      this.notificationService.notify({
+        message: 'Please enter a valid positive number for number of messages.',
         type: NotificationType.error,
       });
       return;
@@ -66,68 +72,14 @@ export class TrendPlotsComponent {
         }
 
         plot.url = response.image;
-      } catch (err) {
-        plot.error = 'Failed to load plot.';
-        this.notificationService.notify({
-          message: `Failed to load ${plot.label} plot.`,
-          type: NotificationType.error
-        });
+      } catch (err: any) {
+        plot.error = err.error?.detail || 'Failed to load comparison plot.';
       } finally {
         plot.loading = false;
       }
     }
   }
 
-
-  // generatePlots(): void {
-  //
-  //   if (!this.filters?.broker) {
-  //     this.notificationService.notify({
-  //       message: 'Please select a broker before generating plots.',
-  //       type: NotificationType.error,
-  //     });
-  //     return;
-  //   }
-  //
-  //   if (this.filters?.numberOfMessages && isNaN(Number(this.filters.numberOfMessages))) {
-  //     this.notificationService.notify({
-  //       message: 'Number of Messages must be a valid number.',
-  //       type: NotificationType.error,
-  //     });
-  //     return;
-  //   }
-  //
-  //   for (const plot of this.plots) {
-  //     plot.url = undefined;
-  //     plot.loading = true;
-  //     plot.error = undefined;
-  //
-  //     let request$;
-  //
-  //     if (plot.metric === 'latency') {
-  //       request$ = this.plotsService.getLatencyVsSize(this.filters?.broker, this.filters?.numberOfMessages);
-  //     } else if (plot.metric === 'energy-per-message') {
-  //       request$ = this.plotsService.getEnergyPerMessageVsSize(this.filters?.broker, this.filters?.numberOfMessages);
-  //     } else {
-  //       request$ = this.plotsService.getMetricVsSize(
-  //         this.filters?.broker,
-  //         plot.metric,
-  //         this.filters?.numberOfMessages
-  //       );
-  //     }
-  //
-  //     request$.subscribe({
-  //       next: (response) => {
-  //         plot.url = response.image;
-  //         plot.loading = false;
-  //       },
-  //       error: (err) => {
-  //         plot.loading = false;
-  //         plot.error = 'Failed to generate plot.';
-  //       }
-  //     });
-  //   }
-  // }
 
   downloadPlot(plotUrl: string, filename: string): void {
     const a = document.createElement('a');

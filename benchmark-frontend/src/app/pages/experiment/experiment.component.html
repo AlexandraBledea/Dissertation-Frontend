@@ -28,6 +28,16 @@
     </tr>
   </table>
 
+  <div class="plots-info-message">
+    <p>
+      If an experiment contains fewer than 2 valid data points with non-zero throughput, a metrics plot over time cannot be generated.
+      <br/>
+      You'll see <strong>"Not enough data to generate plot"</strong> in such cases.
+      <br/>
+      In such a scenario, try running the experiment again or with more messages to ensure enough valid time-series data is captured.
+    </p>
+  </div>
+
   <div class="plot-container" *ngIf="fullPlotUrl; else loading">
     <div class="download-button-container">
       <button class="download-button" (click)="downloadPlot()"> Download Plot </button>

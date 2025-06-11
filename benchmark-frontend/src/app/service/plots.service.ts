@@ -47,11 +47,13 @@ export class PlotsService {
   }
 
 
-  getComparisonBar(metric: string, messageSize: number, messageCount?: number | null) {
+  getComparisonBar(metric: string, messageSize: number, messageCount: number): Observable<{ image: string }> {
     let params = new HttpParams()
       .set('metric', metric)
-      .set('message_size', messageSize.toString());
-    if (messageCount) params = params.set('message_count', messageCount.toString());
-    return this.http.get(this.plotComparisonBar, { params, responseType: 'blob' });
+      .set('message_size', messageSize.toString())
+      .set('message_count', messageCount.toString());
+
+    return this.http.get<{ image: string }>(this.plotComparisonBar, { params });
   }
+
 }

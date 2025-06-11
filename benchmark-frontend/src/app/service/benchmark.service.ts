@@ -12,12 +12,11 @@ export class BenchmarkService {
   private baseUrl = 'http://localhost:8080/api/experiment'
   private startExp = `${this.baseUrl}/start`;
   private getCSV = `${this.baseUrl}/csv`;
-  private filterUrl = `${this.baseUrl}/filter`;
 
   constructor(private http: HttpClient) {}
 
-  public getExperimentById(id: number): Observable<any> {
-    return this.http.get(`${this.baseUrl}/${id}`);
+  deleteExperiment(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
 
   public getCsvForExperiment(id: number): Observable<Blob> {

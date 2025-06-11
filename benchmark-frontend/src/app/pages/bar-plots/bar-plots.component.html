@@ -1,1 +1,41 @@
-<p>bar-plots works!</p>
+<div class="filters">
+  <label>Message Size (KB):
+    <input [(ngModel)]="filters.messageSize" placeholder="e.g. 10"/>
+  </label>
+
+  <label>Number of Messages:
+    <input [(ngModel)]="filters.numberOfMessages" placeholder="e.g. 1000"/>
+  </label>
+
+  <button (click)="generateBarPlots()">Generate Bar Plots</button>
+</div>
+
+<div class="plots-info-message">
+  <p>
+    In order to generate <strong>comparison plots across brokers</strong>, there must be at least one experiment per broker
+    for the selected message size (and message count, if provided).<br/>
+    If this condition is not met, a message saying
+    <strong>"Not enough data to generate plot"</strong> will be shown instead of the chart.
+  </p>
+</div>
+
+<div class="plots-grid">
+  <div class="plot-wrapper" *ngFor="let plot of barPlots">
+    <div class="plot-title">{{ plot.label }}</div>
+
+    <ng-container *ngIf="plot.url; else loadingOrError">
+      <div class="download-button-container">
+        <button class="download-button" (click)="downloadPlot(plot.url, plot.label)">Download Plot</button>
+      </div>
+      <div class="zoom-wrapper">
+        <img [src]="plot.url" alt="{{ plot.label }}" class="plot-image" loading="lazy" />
+      </div>
+    </ng-container>
+
+    <ng-template #loadingOrError>
+      <div class="loading-placeholder" *ngIf="plot.loading">Loading {{ plot.label }}...</div>
+      <div class="error-placeholder" *ngIf="plot.error">{{ plot.error }}</div>
+      <div class="no-plot-placeholder" *ngIf="!plot.loading && !plot.error && !plot.url">No plot generated yet.</div>
+    </ng-template>
+  </div>
+</div>
