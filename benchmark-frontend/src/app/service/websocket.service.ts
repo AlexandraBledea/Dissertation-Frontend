@@ -8,6 +8,7 @@ import { Experiment } from '../data-types/Experiment';
 export class WebSocketService {
   private stompClient: Client; // the STOMP client instance that manages the WebSocket connection
   private experimentUpdateSubject = new Subject<Experiment>(); // emits Experiment updates received from the backend
+  private isConnected = false;
 
   experimentUpdates$ = this.experimentUpdateSubject.asObservable();
 
@@ -18,6 +19,9 @@ export class WebSocketService {
     });
 
     this.stompClient.onConnect = () => {
+      if (this.isConnected) return;
+      this.isConnected = true;
+
       this.stompClient.subscribe('/topic/experiment-update', (message: IMessage) => {
         const experiment: Experiment = JSON.parse(message.body);
         this.experimentUpdateSubject.next(experiment);

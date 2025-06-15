@@ -33,6 +33,15 @@ export class ExperimentComponent {
     }
   }
 
+  getBrokerName(broker: string): string {
+    const map: Record<string, string> = {
+      rabbitmq: 'RabbitMQ',
+      kafka: 'Apache Kafka',
+      redis: 'Redis Pub/Sub'
+    };
+    return map[broker] || broker;
+  }
+
   loadPlot(): void {
     if (!this.experiment) return;
     this.plotsService.getFullPlot(this.experiment.id).subscribe({

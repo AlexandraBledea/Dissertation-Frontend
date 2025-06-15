@@ -80,6 +80,14 @@ export class TrendPlotsComponent {
     }
   }
 
+  getBrokerName(broker: string): string {
+    const map: Record<string, string> = {
+      rabbitmq: 'RabbitMQ',
+      kafka: 'Apache Kafka',
+      redis: 'Redis Pub/Sub'
+    };
+    return map[broker] || broker;
+  }
 
   downloadPlot(plotUrl: string, filename: string): void {
     const a = document.createElement('a');

@@ -141,6 +141,11 @@ small.error {
           &:hover {
             background: #198cc3;
           }
+
+          &:disabled {
+            background: #a8c4d5;
+            cursor: not-allowed;
+          }
         }
       }
     }
@@ -174,10 +179,6 @@ small.error {
     }
   }
 }
-
-/* ------------------------------ */
-/* MODAL for DELETE CONFIRMATION */
-/* ------------------------------ */
 
 .modal {
   position: fixed;

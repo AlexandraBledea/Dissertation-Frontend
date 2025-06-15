@@ -77,6 +77,15 @@ export class DashboardComponent implements OnInit {
       })
   }
 
+  getBrokerName(broker: string): string {
+    const map: Record<string, string> = {
+      rabbitmq: 'RabbitMQ',
+      kafka: 'Apache Kafka',
+      redis: 'Redis Pub/Sub'
+    };
+    return map[broker] || broker;
+  }
+
   isSizeValid(): boolean {
     const val = Number(this.experimentSetup.messageSize);
     return !isNaN(val) && val >= 1 && val <= 500;
@@ -147,7 +156,6 @@ export class DashboardComponent implements OnInit {
   goToPlotsInformation(): void {
     this.router.navigate(['/information']);
   }
-
 
   openDeleteModal(experiment: any): void {
     this.experimentToDelete = experiment;

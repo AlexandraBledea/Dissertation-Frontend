@@ -4,7 +4,7 @@
   <table class="experiment-meta-table" *ngIf="experiment">
     <tr>
       <th> Broker: </th>
-      <td> {{ experiment.broker }} </td>
+      <td> {{ getBrokerName(experiment.broker) }} </td>
       <th> Message Count: </th>
       <td> {{ experiment.numberOfMessages }} </td>
       <th> Message Size: </th>

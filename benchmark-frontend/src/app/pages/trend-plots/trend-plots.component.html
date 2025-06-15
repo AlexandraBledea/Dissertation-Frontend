@@ -2,8 +2,8 @@
 
   <label> Broker:
     <select [(ngModel)]="filters.broker">
-      <option [ngValue]="null"> All</option>
-      <option *ngFor="let broker of brokers" [value]="broker"> {{ broker }}</option>
+      <option [ngValue]="null" disabled selected hidden> Select a broker</option>
+      <option *ngFor="let broker of brokers" [value]="broker"> {{ getBrokerName(broker) }}</option>
     </select>
   </label>
 

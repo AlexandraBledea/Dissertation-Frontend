@@ -2,8 +2,8 @@
 
   <label> Broker:
     <select [(ngModel)]="filters.broker">
-      <option [ngValue]="null"> All</option>
-      <option *ngFor="let broker of brokers" [value]="broker"> {{ broker }}</option>
+      <option [ngValue]="null" disabled selected hidden> Select a broker</option>
+      <option *ngFor="let broker of brokers" [value]="broker"> {{ getBrokerName(broker) }}</option>
     </select>
   </label>
 
@@ -30,7 +30,7 @@
       <label>Broker:
         <select name="broker" required [(ngModel)]="experimentSetup.broker">
           <option [ngValue]="null" disabled selected hidden> Select a broker</option>
-          <option *ngFor="let broker of brokers" [value]="broker"> {{ broker }}</option>
+          <option *ngFor="let broker of brokers" [value]="broker"> {{ getBrokerName(broker) }}</option>
         </select>
       </label>
 
@@ -76,7 +76,7 @@
     <tbody>
     <tr *ngFor="let item of experiments">
       <td> {{ item.id }} </td>
-      <td> {{ item.broker }}</td>
+      <td> {{ getBrokerName(item.broker) }}</td>
       <td> {{ item.numberOfMessages }}</td>
       <td> {{ item.messageSizeInKB }} KB</td>
       <td> {{ item.startTime | date: 'medium' }}</td>
@@ -84,8 +84,8 @@
       <td> {{ item.status }}</td>
       <td>
         <div class="action-buttons">
-          <button (click)="viewExperiment(item)">View more</button>
-          <button (click)="openDeleteModal(item)">Delete</button>
+          <button (click)="viewExperiment(item)" [disabled]="item.status !== 'COMPLETED'">View more</button>
+          <button (click)="openDeleteModal(item)" *ngIf="item.status === 'COMPLETED' || item.status === 'FAILED'">Delete</button>
         </div>
       </td>
     </tr>
