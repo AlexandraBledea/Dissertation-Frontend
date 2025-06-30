@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import { Experiment } from '../../data-types/Experiment';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { BenchmarkService } from '../../service/benchmark.service';
 import { Pagination } from '../../data-types/Pagination';
 import { NotificationType } from '../../data-types/Notification';
@@ -20,9 +22,10 @@ const INITIAL_PAGINATION = {
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
   experiments: Experiment[] = [];
   pagination: Pagination = {...INITIAL_PAGINATION};
+  destroy$ = new Subject<void>();
 
   brokers: string[] = ['rabbitmq', 'kafka', 'redis'];
 
@@ -49,7 +52,9 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
     this.fetchExperiments();
 
-    this.websocketService.experimentUpdates$.subscribe((experiment) => {
+    this.websocketService.experimentUpdates$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((experiment) => {
       this.notificationService.notify({
         message: `Update: Experiment ${experiment.id} is now ${experiment.status}`,
         type: NotificationType.success,
@@ -59,11 +64,21 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  fetchExperiments() {
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 
+  fetchExperiments() {
     this.benchmarkService.getAllExperimentsPaginated(this.pagination, this.filters)
       .subscribe({
         next: ({experiments, pagination}) => {
+          if (this.pagination.pageNumber >= pagination.totalNumberOfPages && pagination.totalNumberOfPages > 0) {
+            this.pagination.pageNumber = 0;
+            this.fetchExperiments();
+            return;
+          }
+
           this.pagination = pagination;
           this.experiments = experiments;
         },

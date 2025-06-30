@@ -14,7 +14,7 @@ export class WebSocketService {
 
   constructor() {
     this.stompClient = new Client({
-      webSocketFactory: () => new SockJS('http://localhost:8080/ws'), // <-- matches Spring endpoint
+      webSocketFactory: () => new SockJS('http://localhost:8080/ws'),
       reconnectDelay: 5000, // Attempts reconnection after 5 seconds if disconnected
     });
 
